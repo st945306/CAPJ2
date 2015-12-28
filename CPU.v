@@ -2,14 +2,29 @@ module CPU
 (
     rst_i,
     clk_i, 
-    start_i
+    start_i,
+
+    mem_data_i, 
+    mem_ack_i,  
+    mem_data_o, 
+    mem_addr_o,     
+    mem_enable_o, 
+    mem_write_o
 );
 
 // Ports
 input               clk_i;
 input               start_i;
-input		    rst_i;
+input		        rst_i;
 wire [31:0] inst_addr, inst;
+
+
+input   [256-1:0]   mem_data_i; 
+input               mem_ack_i;  
+output  [256-1:0]   mem_data_o; 
+output  [32-1:0]    mem_addr_o;     
+output              mem_enable_o; 
+output              mem_write_o; 
 
 mux1 mux1(
     .Eq_i        (Eq.data_o),
@@ -69,13 +84,13 @@ mux8 mux8(
     .data_o    	()
 );
 
-Data_memory Data_memory(
-    .Address_i    	(EX_MEM.Address_o),
-    .WriteData_i    	(EX_MEM.Write_data_o),
-    .MemWrite_i    	(EX_MEM.MemWrite_o),
-    .MemRead_i   	(EX_MEM.MemRead_o),
-    .data_o    		()
-);
+//Data_memory Data_memory(
+  //  .Address_i    	(EX_MEM.Address_o),
+    //.WriteData_i    (EX_MEM.Write_data_o),
+    //.MemWrite_i    	(EX_MEM.MemWrite_o),
+    //.MemRead_i   	(EX_MEM.MemRead_o),
+    //.data_o    		()
+//);
 
 Control Control(
         .Op_i		(inst[31:26]),
@@ -98,11 +113,12 @@ ADD ADD(
 
 PC PC(
         .clk_i          (clk_i),
-	.rst_i          (rst_i),
+	    .rst_i          (rst_i),
         .start_i        (start_i),
         .HD_i        	(HD.PC_o),
         .pc_i           (mux2.data_o),
-        .pc_o           (inst_addr)
+        .pc_o           (inst_addr),
+        .pcEnable_i     (dcache.p1_stall_o)
 );
 
 Eq Eq(
@@ -163,7 +179,7 @@ FW FW(
     .MEM_WB_mux3_i    	(MEM_WB.FW_o),
     .MEM_WB_WB_i    	(MEM_WB.RegWrite_o),
     .mux6_o        	(),
-    .mux7_o        	()
+    .mux7_o        	(),
 );
 
 IF_ID IF_ID(
@@ -174,7 +190,8 @@ IF_ID IF_ID(
     .flush_i        	(Control.Jump_o | (Eq.data_o & Control.Branch_o)),
     .Hz_i        	(HD.IF_ID_o),
     .pc_o        	(),
-    .inst_o        	(inst)
+    .inst_o        	(inst),
+    .pcEnable_i     (dcache.p1_stall_o)
 );
 
 ID_EX ID_EX(
@@ -200,7 +217,8 @@ ID_EX ID_EX(
 	.sign_extend_o	(),
 	.inst25_21_o    (),
 	.inst20_16_o    (),
-	.inst15_11_o    ()
+	.inst15_11_o    (),
+    .pcEnable_i     (dcache.p1_stall_o)
 );
 
 
@@ -217,7 +235,8 @@ EX_MEM EX_MEM(
     .MemWrite_o    	(),
     .Address_o    	(),
     .Write_data_o  	(),
-    .mux3_result_o	()
+    .mux3_result_o	(),
+    .pcEnable_i     (dcache.p1_stall_o)
 );
 
 MEM_WB MEM_WB(
@@ -231,7 +250,32 @@ MEM_WB MEM_WB(
     .RegWrite_o (),
     .mux5_1_o  	(),
     .mux5_2_o   (),
-    .FW_o       ()
+    .FW_o       (),
+    .pcEnable_i     (dcache.p1_stall_o)
 );
 
+
+//data cache
+dcache_top dcache
+(
+    // System clock, reset and stall
+    .clk_i(clk_i), 
+    .rst_i(rst_i),
+    
+    // to Data Memory interface     
+    .mem_data_i(mem_data_i), 
+    .mem_ack_i(mem_ack_i),  
+    .mem_data_o(mem_data_o), 
+    .mem_addr_o(mem_addr_o),    
+    .mem_enable_o(mem_enable_o), 
+    .mem_write_o(mem_write_o), 
+    
+    // to CPU interface 
+    .p1_data_i(EX_MEM.Write_data_o), 
+    .p1_addr_i(EX_MEM.Address_o),   
+    .p1_MemRead_i(EX_MEM.MemRead_o), 
+    .p1_MemWrite_i(EX_MEM.MemWrite_o), 
+    .p1_data_o(), 
+    .p1_stall_o()
+);
 endmodule
