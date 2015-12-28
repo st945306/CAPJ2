@@ -119,16 +119,15 @@ assign	cache_dirty  = write_hit;
 
 // tag comparator
 //!!! add you code here!  (hit=...?,  r_hit_data=...?)
-assign hit = (sram_tag == p1_tag && sram_valid) ? 1'b1:1'b0;
+// seems like valid bit is always 1?
+assign hit = (p1_tag == sram_tag && sram_valid) ? 1'b1:1'b0;
 assign r_hit_data = sram_cache_data;
 
-reg	[31:0]	i;
 // read data :  256-bit to 32-bit
 always@(p1_offset or r_hit_data) begin
 	//!!! add you code here! (p1_data=...?)
 	//p1_data = hit ? r_hit_data[(p1_offset>>2)*32+31 -: 32] : 32'b0;
-	i <= p1_offset * 8 + 31;
-	p1_data = hit ? r_hit_data[i:i - 32] : 32'b0;
+	p1_data = hit ? r_hit_data[p1_offset * 8 + 31 -: 32] : 32'b0;
 end
 
 
