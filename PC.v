@@ -1,6 +1,6 @@
 module PC
 (
-	clk_i,
+    clk_i,
     rst_i,
 	start_i,
 	HD_i,
@@ -19,7 +19,7 @@ input	 [31:0]		   pc_i;
 output	 [31:0]	  	   pc_o;
 
 // Signals
-reg		[31:0]		pc_o;
+reg		[31:0]		   pc_o;
 
 always@(posedge clk_i or negedge rst_i) begin
     if(~rst_i) begin
