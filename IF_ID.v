@@ -21,10 +21,12 @@ always@(posedge clk_i)begin
     	inst_o <= 32'b0;
  	end
 	else begin
-		if(Hz_i)
+		if( Hz_i || !pcEnable )begin
 			inst_o <= inst_o;
-		else
+		end
+		else begin
     		inst_o <= read_data_i;
+    	end
 	end  
 	
 end
