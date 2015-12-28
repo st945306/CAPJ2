@@ -41,7 +41,7 @@ output reg[4:0] inst25_21_o, inst20_16_o, inst15_11_o;
 
 	
 always@(posedge clk_i)begin
-	if(pcEnable_i)	
+	if(pcEnable_i) begin	
 		WB_o <= WB_i;
 		M_o <= M_i;
 		EX1_o <= EX_i[3:3];
@@ -53,5 +53,18 @@ always@(posedge clk_i)begin
 		inst25_21_o = inst25_21_i; 
 		inst20_16_o = inst20_16_i; 
 		inst15_11_o = inst15_11_i;
+	end
+	else begin
+		WB_o <= WB_o;
+		M_o <= M_o;
+		EX1_o <= EX1_o;
+		EX2_o <= EX2_o;
+		EX3_o  <=  EX3_o;
+		data1_o <= data1_o;
+		data2_o <= data2_o;
+		sign_extend_o <= sign_extend_o;
+		inst25_21_o = inst25_21_o; 
+		inst20_16_o = inst20_16_o; 
+		inst15_11_o = inst15_11_o;
 	end
 endmodule

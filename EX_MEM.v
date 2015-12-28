@@ -25,12 +25,20 @@ output reg[31:0] Address_o, Write_data_o;
 output reg[4:0] mux3_result_o; 	
 	
 always@(posedge clk_i)begin
-	if(pcEnable_i)	
+	if(pcEnable_i) begin	
 		WB_o <= WB_i;
 		MemRead_o <= M_i[0:0];
 		MemWrite_o <= M_i[1:1];			
 		Address_o <= ALUResult_i;
 		Write_data_o <= mux7_i;
 		mux3_result_o <= mux3_i;
+	end
+	else begin
+		WB_o <= WB_o;
+		MemRead_o <= MemRead_o;
+		MemWrite_o <= MemWrite_o;			
+		Address_o <= Address_o;
+		Write_data_o <= Write_data_o;
+		mux3_result_o <= mux3_result_o;
 	end
 endmodule
