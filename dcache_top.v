@@ -126,7 +126,6 @@ assign r_hit_data = sram_cache_data;
 // read data :  256-bit to 32-bit
 always@(p1_offset or r_hit_data) begin
 	//!!! add you code here! (p1_data=...?)
-	//p1_data = hit ? r_hit_data[(p1_offset>>2)*32+31 -: 32] : 32'b0;
 	p1_data = hit ? r_hit_data[p1_offset * 8 + 31 -: 32] : 32'b0;
 end
 
@@ -148,7 +147,7 @@ end
 
 
 // controller
-// this is used to handle miss
+// this is used to handle read miss, write miss and write hit(write back)
 always@(posedge clk_i or negedge rst_i) begin
 	if(~rst_i) begin
 		state      <= STATE_IDLE;
@@ -168,14 +167,14 @@ always@(posedge clk_i or negedge rst_i) begin
 				end
 			end
 			STATE_MISS: begin
-				if(sram_dirty) begin		//write back if dirty
+				if(sram_dirty) begin		//write back if dirty; dirty when write hit before; write back when this cache is referenced
 	                //!!! add you code here! 
 					mem_enable <= 1'b1;
 					mem_write <= 1'b1;
 					write_back <= 1'b1;
 					state <= STATE_WRITEBACK;
 				end
-				else begin					//write allocate: write miss = read miss + write hit; read miss = read miss + read hit
+				else begin			//write allocate: write miss = read miss + write hit; read miss = read miss + read hit
 	                //!!! add you code here!
 					mem_enable <= 1'b1;
 					mem_write <= 1'b0;
@@ -184,7 +183,7 @@ always@(posedge clk_i or negedge rst_i) begin
 				end
 			end
 			STATE_READMISS: begin
-				if(mem_ack_i) begin			//wait for data memory acknowledge
+				if(mem_ack_i) begin		//wait for data memory acknowledge
 	                //!!! add you code here! 
 					mem_enable <= 1'b0;
 					cache_we <= 1'b1;
@@ -196,11 +195,11 @@ always@(posedge clk_i or negedge rst_i) begin
 			end
 			STATE_READMISSOK: begin			//wait for data memory acknowledge
 	                //!!! add you code here!
-				cache_we <= 1'b0; 
+				cache_we <= 1'b0; 		//what is this?
 				state <= STATE_IDLE;
 			end
 			STATE_WRITEBACK: begin
-				if(mem_ack_i) begin			//wait for data memory acknowledge
+				if(mem_ack_i) begin		//wait for data memory acknowledge
 	                //!!! add you code here!
 					write_back <= 1'b0;
 					mem_write <= 1'b0; 
