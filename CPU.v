@@ -179,7 +179,7 @@ FW FW(
     .MEM_WB_mux3_i    	(MEM_WB.FW_o),
     .MEM_WB_WB_i    	(MEM_WB.RegWrite_o),
     .mux6_o        	(),
-    .mux7_o        	(),
+    .mux7_o        	()
 );
 
 IF_ID IF_ID(

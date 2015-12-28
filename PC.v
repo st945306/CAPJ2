@@ -2,21 +2,21 @@ module PC
 (
     clk_i,
     rst_i,
-	start_i,
-	HD_i,
-	pcEnable_i,
-	pc_i,
-	pc_o
+    start_i,
+    HD_i,
+    pcEnable_i,
+    pc_i,
+    pc_o
 );
 
 // Interface
 input				   clk_i;
 input				   rst_i;
 input				   start_i;
-input				   HD_i,
-input                  pcEnable_i;
-input	 [31:0]		   pc_i;
-output	 [31:0]	  	   pc_o;
+input				   HD_i;
+input                  		   pcEnable_i;
+input	 [31:0]		 	   pc_i;
+output	 [31:0]	  	   	   pc_o;
 
 // Signals
 reg		[31:0]		   pc_o;
@@ -28,7 +28,7 @@ always@(posedge clk_i or negedge rst_i) begin
     else begin
     	if(HD_i) begin
     	end
-    	else if(start_i)	begin
+    	else if(start_i)begin
     		if( pcEnable_i )
     			pc_o <= pc_i;
     	end

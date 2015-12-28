@@ -37,4 +37,5 @@ always@(posedge clk_i)begin
 		mux5_2_o <= mux5_2_o;
 		FW_o <= FW_o;
 	end
+end
 endmodule

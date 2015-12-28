@@ -41,4 +41,5 @@ always@(posedge clk_i)begin
 		Write_data_o <= Write_data_o;
 		mux3_result_o <= mux3_result_o;
 	end
+end
 endmodule

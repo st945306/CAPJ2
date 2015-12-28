@@ -67,4 +67,5 @@ always@(posedge clk_i)begin
 		inst20_16_o = inst20_16_o; 
 		inst15_11_o = inst15_11_o;
 	end
+end
 endmodule
