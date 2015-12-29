@@ -243,7 +243,7 @@ MEM_WB MEM_WB(
     .clk_i	(clk_i),
     .rst_i	(rst_i),
     .WB_i	(EX_MEM.WB_o),
-    .ReadData_i (Data_memory.data_o),
+    .ReadData_i (dcache.p1_data_o),
     .ALU_i      (EX_MEM.Address_o),
     .mux3_i    	(EX_MEM.mux3_result_o),
     .MemtoReg_o (),
