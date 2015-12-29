@@ -118,7 +118,7 @@ PC PC(
         .HD_i        	(HD.PC_o),
         .pc_i           (mux2.data_o),
         .pc_o           (inst_addr),
-        .pcEnable_i     (dcache.p1_stall_o)
+        .pcEnable_i     (~dcache.p1_stall_o)
 );
 
 Eq Eq(
@@ -191,7 +191,7 @@ IF_ID IF_ID(
     .Hz_i        	(HD.IF_ID_o),
     .pc_o        	(),
     .inst_o        	(inst),
-    .pcEnable_i     (dcache.p1_stall_o)
+    .pcEnable_i     (!dcache.p1_stall_o)
 );
 
 ID_EX ID_EX(
@@ -218,7 +218,7 @@ ID_EX ID_EX(
 	.inst25_21_o    (),
 	.inst20_16_o    (),
 	.inst15_11_o    (),
-    .pcEnable_i     (dcache.p1_stall_o)
+    .pcEnable_i     (~dcache.p1_stall_o)
 );
 
 
@@ -236,7 +236,7 @@ EX_MEM EX_MEM(
     .Address_o    	(),
     .Write_data_o  	(),
     .mux3_result_o	(),
-    .pcEnable_i     (dcache.p1_stall_o)
+    .pcEnable_i     (~dcache.p1_stall_o)
 );
 
 MEM_WB MEM_WB(
@@ -251,7 +251,7 @@ MEM_WB MEM_WB(
     .mux5_1_o  	(),
     .mux5_2_o   (),
     .FW_o       (),
-    .pcEnable_i     (dcache.p1_stall_o)
+    .pcEnable_i     (~dcache.p1_stall_o)
 );
 
 
