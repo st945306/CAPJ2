@@ -32,7 +32,7 @@ always@(posedge clk_i or negedge rst_i) begin
     		if( pcEnable_i )
     			pc_o <= pc_i;
 		else
-			pc_o  <= pc_i;
+			pc_o  <= pc_o;
     	end
     	else
     		pc_o <= 32'b0;
