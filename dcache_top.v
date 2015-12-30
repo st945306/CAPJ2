@@ -186,7 +186,7 @@ always@(posedge clk_i or negedge rst_i) begin
 				if(mem_ack_i) begin		//wait for data memory acknowledge
 	                //!!! add you code here! 
 					mem_enable <= 1'b0;
-					cache_we <= 1'b1;
+					cache_we <= 1'b1;	//this should be set to 1 when you want to write cache(see line 107)
 					state <= STATE_READMISSOK;
 				end
 				else begin
@@ -195,7 +195,7 @@ always@(posedge clk_i or negedge rst_i) begin
 			end
 			STATE_READMISSOK: begin			//wait for data memory acknowledge
 	                //!!! add you code here!
-				cache_we <= 1'b0; 		//what is this?
+				cache_we <= 1'b0;
 				state <= STATE_IDLE;
 			end
 			STATE_WRITEBACK: begin
