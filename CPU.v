@@ -26,6 +26,10 @@ output  [32-1:0]    mem_addr_o;
 output              mem_enable_o; 
 output              mem_write_o; 
 
+wire Stall,run;
+reg Run;
+assign run = Run;
+
 mux1 mux1(
     .Eq_i        (Eq.data_o),
     .Branch_i    (Control.Branch_o),    
@@ -118,7 +122,7 @@ PC PC(
         .HD_i        	(HD.PC_o),
         .pc_i           (mux2.data_o),
         .pc_o           (inst_addr),
-        .pcEnable_i     (~dcache.p1_stall_o)
+        .pcEnable_i     (run)
 );
 
 Eq Eq(
@@ -191,7 +195,7 @@ IF_ID IF_ID(
     .Hz_i        	(HD.IF_ID_o),
     .pc_o        	(),
     .inst_o        	(inst),
-    .pcEnable_i     (!dcache.p1_stall_o)
+    .pcEnable_i     (run)
 );
 
 ID_EX ID_EX(
@@ -218,7 +222,7 @@ ID_EX ID_EX(
 	.inst25_21_o    (),
 	.inst20_16_o    (),
 	.inst15_11_o    (),
-    .pcEnable_i     (~dcache.p1_stall_o)
+    .pcEnable_i     (run)
 );
 
 
@@ -236,7 +240,7 @@ EX_MEM EX_MEM(
     .Address_o    	(),
     .Write_data_o  	(),
     .mux3_result_o	(),
-    .pcEnable_i     (~dcache.p1_stall_o)
+    .pcEnable_i     (run)
 );
 
 MEM_WB MEM_WB(
@@ -251,7 +255,7 @@ MEM_WB MEM_WB(
     .mux5_1_o  	(),
     .mux5_2_o   (),
     .FW_o       (),
-    .pcEnable_i     (~dcache.p1_stall_o)
+    .pcEnable_i     (run)
 );
 
 
@@ -276,6 +280,14 @@ dcache_top dcache
     .p1_MemRead_i(EX_MEM.MemRead_o), 
     .p1_MemWrite_i(EX_MEM.MemWrite_o), 
     .p1_data_o(), 
-    .p1_stall_o()
+    .p1_stall_o(Stall)
 );
+
+always@(posedge start_i or Stall) begin
+    if(Stall == 1'b1 )
+        Run = 1'b0;
+    else
+        Run = 1'b1;
+end
+
 endmodule

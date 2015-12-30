@@ -31,6 +31,8 @@ always@(posedge clk_i or negedge rst_i) begin
     	else if(start_i)begin
     		if( pcEnable_i )
     			pc_o <= pc_i;
+		else
+			pc_o  <= pc_i;
     	end
     	else
     		pc_o <= 32'b0;

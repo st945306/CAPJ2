@@ -25,7 +25,7 @@ always@(posedge clk_i)begin
 			inst_o <= inst_o;
 		end
 		else begin
-    		inst_o <= read_data_i;
+    			inst_o <= read_data_i;
 		end
     	end
 end
