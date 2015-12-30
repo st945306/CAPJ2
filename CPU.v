@@ -26,9 +26,9 @@ output  [32-1:0]    mem_addr_o;
 output              mem_enable_o; 
 output              mem_write_o; 
 
-wire Stall,run;
-reg Run;
-assign run = Run;
+wire Stall,pc_Enable;
+reg Enable;
+assign pc_Enable = Enable;
 
 mux1 mux1(
     .Eq_i        (Eq.data_o),
@@ -122,7 +122,7 @@ PC PC(
         .HD_i        	(HD.PC_o),
         .pc_i           (mux2.data_o),
         .pc_o           (inst_addr),
-        .pcEnable_i     (run)
+        .pcEnable_i     (pc_Enable)
 );
 
 Eq Eq(
@@ -195,7 +195,7 @@ IF_ID IF_ID(
     .Hz_i        	(HD.IF_ID_o),
     .pc_o        	(),
     .inst_o        	(inst),
-    .pcEnable_i     (run)
+    .pcEnable_i     (pc_Enable)
 );
 
 ID_EX ID_EX(
@@ -222,7 +222,7 @@ ID_EX ID_EX(
 	.inst25_21_o    (),
 	.inst20_16_o    (),
 	.inst15_11_o    (),
-    .pcEnable_i     (run)
+    .pcEnable_i     (pc_Enable)
 );
 
 
@@ -240,7 +240,7 @@ EX_MEM EX_MEM(
     .Address_o    	(),
     .Write_data_o  	(),
     .mux3_result_o	(),
-    .pcEnable_i     (run)
+    .pcEnable_i     (pc_Enable)
 );
 
 MEM_WB MEM_WB(
@@ -255,7 +255,7 @@ MEM_WB MEM_WB(
     .mux5_1_o  	(),
     .mux5_2_o   (),
     .FW_o       (),
-    .pcEnable_i     (run)
+    .pcEnable_i     (pc_Enable)
 );
 
 
@@ -285,9 +285,9 @@ dcache_top dcache
 
 always@(posedge start_i or Stall) begin
     if(Stall == 1'b1 )
-        Run = 1'b0;
+        Enable = 1'b0;
     else
-        Run = 1'b1;
+        Enable = 1'b1;
 end
 
 endmodule
